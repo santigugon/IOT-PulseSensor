@@ -8,8 +8,8 @@
   //#define FIREBASE_HOST "https://iot-reto-e60d0-default-rtdb.firebaseio.com/"
 //#define FIREBASE_AUTH "ZDkCfO6lKATancp4E4NQ1g5nInOKLivVnSrQDeES"
   // Inclusiones de Bibliotecas
+
 #include "FirebaseESP8266.h"
-//#include<Firebase_ESP_Client.h>
 #include "addons/TokenHelper.h"
 #include "addons/RTDBHelper.h"
 #define API_KEY "AIzaSyCbx5Kk75PykuxhT87vXFNYs5wDP8yERyE"
@@ -51,14 +51,16 @@ float voltage=0.0;
   */
 int sistemaOn=1;
 int fuerzaDeseada;
+
 float porcentajeDeseado;
 float porcentajeFuerza;
-unsigned long ultimoTiempoAlmacenamiento = 0;
-unsigned long tiempoTotalDiferenciaAlta = 0;
 int tolerancia=10;
 
+unsigned long ultimoTiempoAlmacenamiento = 0;
+unsigned long tiempoTotalDiferenciaAlta = 0;
+
 //Para apagar y prender el sistema
-BLYNK_WRITE(V1) {
+BLYNK_WRITE(V0) {
   // Lee el valor recibido en el pin virtual V0 y lo usa para controlar el estado de D7 (un LED, asumiendo que está conectado al pin D7).
   sistemaOn=param.asInt();
 }
@@ -91,8 +93,8 @@ void setup() {
 }
 
 // Función para calcular la presión desde el voltaje
-float calcularPresion(float voltaje) {
-  return 0.001 * (voltaje - 2.5);
+float calcularPresion(int presion) {
+  return presion/20;
 }
 
 void loop() {
@@ -104,18 +106,18 @@ void loop() {
     // Leer el valor analógico del sensor de presión
     int valorSensor = analogRead(pinSensorPresion);
     float voltajeSensor = valorSensor / 1023.0 * 3.3;
-    float presion = calcularPresion(voltajeSensor);
+     float presion = calcularPresion(valorSensor);
 
     // Actualizar el widget de Blynk con el valor del sensor
-    Blynk.virtualWrite(9, valorSensor);
+    Blynk.virtualWrite(9, presion);
   
 
     // Calcular el porcentaje de presión deseado y actual
     porcentajeDeseado = (float(fuerzaDeseada) / 20) * 100;
-    porcentajeFuerza = (float(valorSensor) / 1023) * 100;
+    porcentajeFuerza = (float(presion) / 20) * 100;
     
     // Controlar los LEDs según la diferencia de presión
-    if (porcentajeFuerza >= porcentajeDeseado - tolerancia && porcentajeFuerza <= porcentajeDeseado + tolerancia) {
+    if ((porcentajeFuerza >= porcentajeDeseado - tolerancia && porcentajeFuerza <= porcentajeDeseado + tolerancia)&&sistemaOn==1) {
       digitalWrite(D8, LOW);
       digitalWrite(D7, LOW);
     } else {
@@ -130,7 +132,7 @@ void loop() {
 
     // Almacenar el valor del sensor en Firebase
     if (Firebase.ready()) {
-      if (Firebase.RTDB.setInt(&firebaseData, "SensorPresion/PresionActual", valorSensor)) {
+      if (Firebase.RTDB.setFloat(&firebaseData, "SensorPresion/PresionActual", presion) && Firebase.RTDB.setFloat(&firebaseData, "SensorPresion/PresionActual", porcentajeDeseado*20)) {
         //Serial.println("Dato almacenado exitosamente");
       } else {
         //Serial.println("Error al almacenar el dato");
@@ -165,14 +167,15 @@ void loop() {
 
   char pathDifPresion[50];
   char pathPresion[50];
+  char pathAlertas[50];
   snprintf(pathDifPresion, sizeof(pathDifPresion), "SensorPresion/registrosdiferenciaPresion/%lu", currentTimestamp);
   snprintf(pathPresion, sizeof(pathPresion), "SensorPresion/registrosPresion/%lu", currentTimestamp);
-
+  snprintf(pathDipathAlertasfPresion, sizeof(pathAlertas),"SensorPresion/Alertas/%lu", currentTimestamp); 
 
   if (Firebase.ready()) {
       if(currentTimestamp-prevTimestamp>10000){
 
-        if (Firebase.RTDB.setFloat(&firebaseData, pathDifPresion, diferenciaPresion)&&Firebase.RTDB.setInt(&firebaseData, pathPresion, valorSensor)) {
+        if (Firebase.RTDB.setFloat(&firebaseData, pathDifPresion, diferenciaPresion)&&Firebase.RTDB.setFloat(&firebaseData, pathPresion, presion)&&Firebase.RTDB.setInt(&firebaseData, pathAlertas, 1)) {
           prevTimestamp=currentTimestamp;
             //Serial.println("Data with timestamp stored successfully");
         } else {
