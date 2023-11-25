@@ -132,7 +132,7 @@ void loop() {
 
     // Almacenar el valor del sensor en Firebase
     if (Firebase.ready()) {
-      if (Firebase.RTDB.setFloat(&firebaseData, "SensorPresion/PresionActual", presion) && Firebase.RTDB.setFloat(&firebaseData, "SensorPresion/PresionActual", porcentajeDeseado*20)) {
+      if (Firebase.RTDB.setInt(&firebaseData, "SensorPresion/PresionActual", presion)) {
         //Serial.println("Dato almacenado exitosamente");
       } else {
         //Serial.println("Error al almacenar el dato");
@@ -149,7 +149,7 @@ void loop() {
       ultimoTiempoAlmacenamiento = tiempoActual;
 
       if (Firebase.ready()) {
-        if (Firebase.RTDB.setFloat(&firebaseData, "SensorPresion/diferenciaPresionActual", diferenciaPresion)) {
+        if (Firebase.RTDB.setFloat(&firebaseData, "SensorPresion/diferenciaPresionActual", diferenciaPresion)&&Firebase.RTDB.setFloat(&firebaseData, "SensorPresion/tolerancia", tolerancia)) {
         //  Serial.println("Diferencia de presión almacenada exitosamente");
         } else {
         // Serial.println("Error al almacenar la diferencia de presión");
@@ -168,15 +168,20 @@ void loop() {
   char pathDifPresion[50];
   char pathPresion[50];
   char pathAlertas[50];
-  snprintf(pathDifPresion, sizeof(pathDifPresion), "SensorPresion/registrosdiferenciaPresion/%lu", currentTimestamp);
-  snprintf(pathPresion, sizeof(pathPresion), "SensorPresion/registrosPresion/%lu", currentTimestamp);
-  snprintf(pathDipathAlertasfPresion, sizeof(pathAlertas),"SensorPresion/Alertas/%lu", currentTimestamp); 
+  //char pathDipathAlertasfPresion[50]
+  snprintf(pathDifPresion, sizeof(pathDifPresion), "SensorPresion/DiferenciaPresionHistorica/%lu", currentTimestamp);
+  snprintf(pathPresion, sizeof(pathPresion), "SensorPresion/PresionHistorica/%lu", currentTimestamp);
+  snprintf(pathAlertas, sizeof(pathAlertas), "SensorPresion/Alertas/%lu", currentTimestamp);
+  //snprintf(pathDipathAlertasfPresion, sizeof(pathAlertas),"SensorPresion/Alertas/%lu", currentTimestamp); 
 
   if (Firebase.ready()) {
       if(currentTimestamp-prevTimestamp>10000){
-
-        if (Firebase.RTDB.setFloat(&firebaseData, pathDifPresion, diferenciaPresion)&&Firebase.RTDB.setFloat(&firebaseData, pathPresion, presion)&&Firebase.RTDB.setInt(&firebaseData, pathAlertas, 1)) {
+        if (porcentajeFuerza >= porcentajeDeseado - tolerancia && porcentajeFuerza <= porcentajeDeseado + tolerancia) {
+              Firebase.RTDB.setInt(&firebaseData, pathAlertas, 1);
+           }
+        if (Firebase.RTDB.setFloat(&firebaseData, pathDifPresion, diferenciaPresion)&&Firebase.RTDB.setInt(&firebaseData, pathPresion, presion)) {
           prevTimestamp=currentTimestamp;
+           
             //Serial.println("Data with timestamp stored successfully");
         } else {
             //Serial.println("Error storing data with timestamp");
