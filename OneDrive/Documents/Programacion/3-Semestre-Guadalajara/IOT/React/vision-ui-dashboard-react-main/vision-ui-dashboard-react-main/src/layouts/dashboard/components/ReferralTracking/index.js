@@ -9,6 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { fetchData } from "../../data/lineChartData";
 import { ref, onValue } from 'firebase/database'; // Import onValue function
 import database from "../../data/database";
+import VuiSwitch from "../../../../components/VuiSwitch";
 function ReferralTracking() {
 
 	const { info, gradients } = colors;
@@ -57,7 +58,7 @@ function ReferralTracking() {
 					sx={{ width: '100%' }}
 					mb='40px'>
 					<VuiTypography variant='lg' color='white' mr='auto' fontWeight='bold'>
-						Referral Tracking
+						Seguimiento paciente
 					</VuiTypography>
 					<VuiBox
 						display='flex'
@@ -115,10 +116,11 @@ function ReferralTracking() {
 								}
 							})}>
 							<VuiTypography color='text' variant='button' fontWeight='regular' mb='5px'>
-								Invited
+								Edad paciente
 							</VuiTypography>
+
 							<VuiTypography color='white' variant='lg' fontWeight='bold'>
-								145 people
+								13
 							</VuiTypography>
 						</VuiBox>
 						<VuiBox
@@ -138,10 +140,34 @@ function ReferralTracking() {
 								}
 							})}>
 							<VuiTypography color='text' variant='button' fontWeight='regular' mb='5px'>
-								Bonus
+								Santiago Gutierrez
 							</VuiTypography>
+							<VuiTypography color='white' fontSize="5px" fontWeight='bold'>
+
+							</VuiTypography>
+						</VuiBox>
+						<VuiBox
+							display='flex'
+							width='220px'
+							p='20px 22px'
+							flexDirection='column'
+							sx={({ breakpoints }) => ({
+								background: linearGradient(cardContent.main, cardContent.state, cardContent.deg),
+								borderRadius: '20px',
+								[breakpoints.up('xl')]: {
+									maxWidth: '110px !important'
+								},
+								[breakpoints.up('xxl')]: {
+									minWidth: '180px',
+									maxWidth: '100% !important'
+								}
+							})}>
+							<VuiTypography color='text' variant='button' fontWeight='regular' mb='5px'>
+								Sistema ON
+							</VuiTypography>
+							 <VuiSwitch color="info" checked={"SISTEMA ON"}  />
 							<VuiTypography color='white' variant='lg' fontWeight='bold'>
-								1,465
+
 							</VuiTypography>
 						</VuiBox>
 					</Stack>
@@ -187,6 +213,7 @@ function ReferralTracking() {
 					</VuiBox>
 				</VuiBox>
 			</VuiBox>
+
 		</Card>
 	);
 }

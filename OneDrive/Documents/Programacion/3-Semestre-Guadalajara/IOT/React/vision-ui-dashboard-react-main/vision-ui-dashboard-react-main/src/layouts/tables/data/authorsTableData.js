@@ -74,7 +74,7 @@ export default {
   rows: [
     {
       author: <Author image={avatar4} name="Esthera Jackson" email="esthera@simmmple.com" />,
-      function: <Function job="Manager" org="Organization" />,
+      function: <Function job="Paciente" org="Aranda de la parra" />,
       status: (
         <VuiBadge
           variant="standard"
@@ -103,7 +103,7 @@ export default {
     },
     {
       author: <Author image={avatar2} name="Alexa Liras" email="alexa@simmmple.com" />,
-      function: <Function job="Programator" org="Developer" />,
+      function: <Function job="Paciente" org="Hospital Angeles" />,
       status: (
         <VuiBadge
           variant="standard"
@@ -130,8 +130,8 @@ export default {
       ),
     },
     {
-      author: <Author image={avatar3} name="Laurent Michael" email="laurent@simmmple.com" />,
-      function: <Function job="Executive" org="Projects" />,
+      author: <Author image={avatar6} name="Laurent Michael" email="laurent@simmmple.com" />,
+      function: <Function job="Paciente" org="Hospital general" />,
       status: (
         <VuiBadge
           variant="standard"
@@ -160,7 +160,7 @@ export default {
     },
     {
       author: <Author image={avatar1} name="Freduardo Hill" email="freduardo@simmmple.com" />,
-      function: <Function job="Programator" org="Developer" />,
+      function: <Function job="Paciente" org="Hospital Valle Real" />,
       status: (
         <VuiBadge
           variant="standard"
@@ -189,7 +189,7 @@ export default {
     },
     {
       author: <Author image={avatar5} name="Daniel Thomas" email="daniel@simmmple.com" />,
-      function: <Function job="Manager" org="Executive" />,
+      function: <Function job="Paciente" org="Hospital Angeles" />,
       status: (
         <VuiBadge
           variant="standard"
@@ -217,7 +217,7 @@ export default {
     },
     {
       author: <Author image={avatar6} name="Mark Wilson" email="mark@simmmple.com" />,
-      function: <Function job="Programtor" org="Developer" />,
+      function: <Function job="Dr" org="Hospital regional" />,
       status: (
         <VuiBadge
           variant="standard"

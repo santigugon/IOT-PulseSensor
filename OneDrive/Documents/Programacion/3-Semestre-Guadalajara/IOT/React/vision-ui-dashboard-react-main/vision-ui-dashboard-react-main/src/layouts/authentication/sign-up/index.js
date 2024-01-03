@@ -56,12 +56,12 @@ function SignIn() {
 
   return (
     <CoverLayout
-      title="Welcome!"
+      title="Bienvenido!"
       color="white"
-      description="Use these awesome forms to login or create new account in your project for free."
+      description="Registrate y conviertete parte del futuro contra la escoliosis"
       image={bgSignIn}
-      premotto="INSPIRED BY THE FUTURE:"
-      motto="THE VISION UI DASHBOARD"
+      premotto="INSPIRED AGAINST SCOLIOSIS:"
+      motto="ESCOQUIT"
       cardContent
     >
       <GradientBorder borderRadius={borders.borderRadius.form} minWidth="100%" maxWidth="100%">
@@ -83,7 +83,7 @@ function SignIn() {
               fontSize: size.lg,
             })}
           >
-            Register with
+            Registrate con
           </VuiTypography>
           <Stack mb="25px" justifyContent="center" alignItems="center" direction="row" spacing={2}>
             <GradientBorder borderRadius="xl">
@@ -183,7 +183,7 @@ function SignIn() {
           <VuiBox mb={2}>
             <VuiBox mb={1} ml={0.5}>
               <VuiTypography component="label" variant="button" color="white" fontWeight="medium">
-                Name
+                Nombre
               </VuiTypography>
             </VuiBox>
             <GradientBorder
@@ -204,6 +204,7 @@ function SignIn() {
               />
             </GradientBorder>
           </VuiBox>
+
           <VuiBox mb={2}>
             <VuiBox mb={1} ml={0.5}>
               <VuiTypography component="label" variant="button" color="white" fontWeight="medium">
@@ -232,7 +233,7 @@ function SignIn() {
           <VuiBox mb={2}>
             <VuiBox mb={1} ml={0.5}>
               <VuiTypography component="label" variant="button" color="white" fontWeight="medium">
-                Password
+                Contraseña
               </VuiTypography>
             </VuiBox>
             <GradientBorder
@@ -255,7 +256,7 @@ function SignIn() {
             </GradientBorder>
           </VuiBox>
           <VuiBox display="flex" alignItems="center">
-            <VuiSwitch color="info" checked={rememberMe} onChange={handleSetRememberMe} />
+            <VuiSwitch color="info" checked={"recuerdame"} onChange={handleSetRememberMe} />
             <VuiTypography
               variant="caption"
               color="white"
@@ -273,7 +274,7 @@ function SignIn() {
           </VuiBox>
           <VuiBox mt={3} textAlign="center">
             <VuiTypography variant="button" color="text" fontWeight="regular">
-              Already have an account?{" "}
+              Ya tienes cuenta?{" "}
               <VuiTypography
                 component={Link}
                 to="/authentication/sign-in"

@@ -18,7 +18,7 @@
 
 export const barChartDataDashboard = [
   {
-    name: "Sales",
+    name: "Alertas",
     data: [1, 1, 1, 1, 1, 1, 1, 1, 1],
   },
 ];

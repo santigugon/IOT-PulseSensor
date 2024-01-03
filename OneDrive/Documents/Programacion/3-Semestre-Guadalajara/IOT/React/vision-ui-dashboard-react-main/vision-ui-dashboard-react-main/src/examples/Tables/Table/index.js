@@ -105,7 +105,7 @@ function Table({ columns, rows }) {
                 fontWeight="medium"
                 sx={{ width: "max-content" }}
               >
-                {row[name][1]}
+                {hola}
               </VuiTypography>
             </VuiBox>
           </VuiBox>

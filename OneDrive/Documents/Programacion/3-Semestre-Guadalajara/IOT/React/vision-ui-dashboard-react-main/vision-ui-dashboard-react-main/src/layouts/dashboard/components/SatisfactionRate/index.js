@@ -52,7 +52,7 @@ const SatisfactionRate = () => {
 				</VuiTypography>
 				<VuiBox sx={{ alignSelf: 'center', justifySelf: 'center', zIndex: '-1' }}>
 					<VuiBox sx={{ position: 'relative', display: 'inline-flex' }}>
-						<CircularProgress variant='determinate' value={340} size={170} color='info' />
+						<CircularProgress variant='determinate' value={presion<100?presion:100} size={200} color='info' />
 						<VuiBox
 							sx={{
 								top: 0,
@@ -63,6 +63,7 @@ const SatisfactionRate = () => {
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'center'
+
 							}}>
 							<VuiBox
 								sx={{
@@ -102,12 +103,12 @@ const SatisfactionRate = () => {
 						display='flex'
 						justifyContent='center'
 						alignItems='center'
-						sx={{ minWidth: '80px' }}>
+						sx={{ minWidth: '80px' , }}>
 						<VuiTypography color='white' variant='h3'>
-							{presion}%
+							{presion<100?presion:100}%
 						</VuiTypography>
 						<VuiTypography color='text' variant='caption' fontWeight='regular'>
-							Diferencia entre la presión deseada y la actual
+							Diferencia presión deseada y actual
 						</VuiTypography>
 					</VuiBox>
 					<VuiTypography color='text' variant='caption' display='inline-block' fontWeight='regular'>

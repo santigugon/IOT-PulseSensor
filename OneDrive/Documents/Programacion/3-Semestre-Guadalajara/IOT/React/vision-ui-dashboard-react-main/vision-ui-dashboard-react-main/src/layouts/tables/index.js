@@ -18,7 +18,7 @@
 
 // @mui material components
 import Card from "@mui/material/Card";
-
+import Button from '@mui/material/Button';
 // Vision UI Dashboard React components
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
@@ -35,7 +35,6 @@ import projectsTableData from "layouts/tables/data/projectsTableData";
 
 function Tables() {
   const { columns, rows } = authorsTableData;
-  const { columns: prCols, rows: prRows } = projectsTableData;
 
   return (
     <DashboardLayout>
@@ -45,7 +44,7 @@ function Tables() {
           <Card>
             <VuiBox display="flex" justifyContent="space-between" alignItems="center" mb="22px">
               <VuiTypography variant="lg" color="white">
-                Authors table
+                Pacientes
               </VuiTypography>
             </VuiBox>
             <VuiBox
@@ -69,7 +68,10 @@ function Tables() {
         <Card>
           <VuiBox display="flex" justifyContent="space-between" alignItems="center">
             <VuiTypography variant="lg" color="white">
-              Projects table
+              Agregar nuevos pacientes
+                 <Button variant="contained" disableElevation>
+      Click aquí
+    </Button>
             </VuiTypography>
           </VuiBox>
           <VuiBox
@@ -86,7 +88,6 @@ function Tables() {
               },
             }}
           >
-            <Table columns={prCols} rows={prRows} />
           </VuiBox>
         </Card>
       </VuiBox>

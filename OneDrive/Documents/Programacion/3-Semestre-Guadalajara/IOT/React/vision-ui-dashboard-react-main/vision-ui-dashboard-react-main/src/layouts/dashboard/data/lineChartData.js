@@ -39,10 +39,10 @@ export const fetchData = (path) => {
 export const lineChartDataDashboard = [
   {
     name: "Santiago Gutiérrez",
-    data: [500, 250, 300, 220, 500, 250, 300, 230, 300, 350, 250, 400],
+    data: [9, 8, 8, 10, 8, 14, 3, 8, 9],
   },
   {
     name: "Antoine Ganem",
-    data: [200, 230, 300, 350, 370, 420, 550, 350, 400, 500, 330, 550],
+    data: [4,5,4,10,7,3,4,5,6],
   },
 ];

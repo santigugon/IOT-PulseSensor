@@ -24,7 +24,7 @@ import GreenLightning from 'assets/images/shapes/green-lightning.svg';
 import WhiteLightning from 'assets/images/shapes/white-lightning.svg';
 import linearGradient from 'assets/theme/functions/linearGradient';
 import colors from 'assets/theme/base/colors';
-import carProfile from 'assets/images/shapes/car-profile.svg';
+import carProfile from 'assets/images/shapes/1294818.svg';
 import LineChart from 'examples/Charts/LineCharts/LineChart';
 import { lineChartDataProfile1, lineChartDataProfile2 } from 'variables/charts';
 import { lineChartOptionsProfile2, lineChartOptionsProfile1 } from 'variables/charts';
@@ -32,27 +32,73 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 
 import { fetchData } from "../../../dashboard/data/lineChartData";
+import { onValue, ref } from "firebase/database";
+import database from "../../../dashboard/data/database";
+
 const CarInformations = () => {
 	const { gradients, info } = colors;
 	const { cardContent } = gradients;
+ const [presion, setPresionDeseada] = useState(null);
+      const [tolerancia, setTolerancia] = useState(null);
+       const [dif, setDif] = useState(null);
+	let path="SensorPresion/PresionActual"
+  let path2="SensorPresion/tolerancia"
+  let path3="SensorPresion/diferenciaPresionActual"
 
-	 const fetchDataAndTransform = async () => {
-      try {
-				const data = await fetchData("SensorPresion/Alertas");
-				const dataPresion = await fetchData("SensorPresion/PresionActual");
-				console.log(dataPresion)
+  useEffect(() => {
+    // Initiate data fetching
+    fetchData(path)
+      .then((initialData) => {
+        setPresionDeseada(initialData);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+      fetchData(path2)
+      .then((initialData) => {
+        setTolerancia(initialData);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+       fetchData(path3)
+      .then((initialData) => {
+        setDif(initialData);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
 
-			}
-			catch (err){
+    // Set up a real-time listener for subsequent updates
+    const dataRef = ref(database, path);
+    const unsubscribe = onValue(dataRef, (snapshot) => {
+      const updatedData = snapshot.val();
+      setPresionDeseada(updatedData);
+    });
+    const dataRef2 = ref(database, path2);
+    const unsubscribe2 = onValue(dataRef2, (snapshot) => {
+      const updatedData = snapshot.val();
+      setTolerancia(updatedData);
+    });
+     const dataRef3 = ref(database, path3);
+    const unsubscribe3 = onValue(dataRef3, (snapshot) => {
+      const updatedData = snapshot.val();
+      setDif(updatedData);
+    });
 
-			}
-	 }
-	 fetchDataAndTransform()
+    // Clean up the listener when the component is unmounted
+    return () => {
+      unsubscribe();
+    };
+
+  }, []); // Empty dependency array means this effect runs once on mount
+
 	return (
 		<Card
 			sx={({ breakpoints }) => ({
 				[breakpoints.up('xxl')]: {
-					maxHeight: '400px'
+					maxHeight: '400px',
+					backgroundColor:"#ffffff !important"
 				}
 			})}>
 			<VuiBox display='flex' flexDirection='column'>
@@ -60,7 +106,7 @@ const CarInformations = () => {
 					Información del corsé
 				</VuiTypography>
 				<VuiTypography variant='button' color='text' fontWeight='regular' mb='30px'>
-					Hello, Mark Johnson! Your Car is ready.
+					Todas las alertas e información relevante del corse se encuentran a continuación
 				</VuiTypography>
 				<Stack
 					spacing='24px'
@@ -87,11 +133,11 @@ const CarInformations = () => {
 						})}
 						alignItems='center'>
 						<VuiBox sx={{ position: 'relative', display: 'inline-flex' }}>
-							<CircularProgress variant='determinate' value={60} size={20} color='info' />
+							<CircularProgress variant='determinate' value={presion*5} size={150} color='info' />
 							<VuiBox display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
 								<VuiBox component='img' src={GreenLightning} />
 								<VuiTypography color='white' variant='h2' mt='3px' fontWeight='bold' mb='2px'>
-									68%
+									{presion}
 								</VuiTypography>
 								<VuiTypography color='text' variant='caption'>
 									Presión actual
@@ -104,10 +150,10 @@ const CarInformations = () => {
 							flexDirection='column'
 							sx={{ textAlign: 'center' }}>
 							<VuiTypography color='white' variant='lg' fontWeight='bold' mb='2px' mt='18px'>
-								0h 58 min
+								{presion<(dif/100)*20?(presion+(dif/100)*20):(presion-(dif/100)*20)}
 							</VuiTypography>
 							<VuiTypography color='text' variant='button' fontWeight='regular'>
-								Time to full charge
+								Presión deseada
 							</VuiTypography>
 						</VuiBox>
 					</VuiBox>
@@ -140,7 +186,7 @@ const CarInformations = () => {
 								}}>
 								<VuiBox display='flex' flexDirection='column' mr='auto'>
 									<VuiTypography color='text' variant='caption' fontWeight='medium' mb='2px'>
-										Battery Health
+										Tolerancia actual
 									</VuiTypography>
 									<VuiTypography
 										color='white'
@@ -151,7 +197,7 @@ const CarInformations = () => {
 												fontSize: '20px'
 											}
 										})}>
-										76%
+										{tolerancia}%
 									</VuiTypography>
 								</VuiBox>
 								<VuiBox
@@ -179,7 +225,7 @@ const CarInformations = () => {
 								}}>
 								<VuiBox display='flex' flexDirection='column' mr='auto'>
 									<VuiTypography color='text' variant='caption' fontWeight='medium' mb='2px'>
-										Efficiency
+										Dif. presión
 									</VuiTypography>
 									<VuiTypography
 										color='white'
@@ -190,7 +236,7 @@ const CarInformations = () => {
 												fontSize: '20px'
 											}
 										})}>
-										+20%
+										{dif}%
 									</VuiTypography>
 								</VuiBox>
 								<VuiBox sx={{ maxHeight: '75px' }}>
@@ -213,7 +259,7 @@ const CarInformations = () => {
 								}}>
 								<VuiBox display='flex' flexDirection='column' mr='auto'>
 									<VuiTypography color='text' variant='caption' fontWeight='medium' mb='2px'>
-										Consumption
+										Estado:
 									</VuiTypography>
 									<VuiTypography
 										color='white'
@@ -224,7 +270,7 @@ const CarInformations = () => {
 												fontSize: '20px'
 											}
 										})}>
-										163W/km
+										{dif>tolerancia?"⚠️ Alerta presion":" ✅Todo en orden"}
 									</VuiTypography>
 								</VuiBox>
 								<VuiBox
@@ -252,7 +298,7 @@ const CarInformations = () => {
 								}}>
 								<VuiBox display='flex' flexDirection='column' mr='auto'>
 									<VuiTypography color='text' variant='caption' fontWeight='medium' mb='2px'>
-										This Week
+										Num Alertas
 									</VuiTypography>
 									<VuiTypography
 										color='white'
@@ -263,7 +309,7 @@ const CarInformations = () => {
 												fontSize: '20px'
 											}
 										})}>
-										1.342km
+										140
 									</VuiTypography>
 								</VuiBox>
 								<VuiBox sx={{ maxHeight: '75px' }}>
@@ -283,6 +329,84 @@ const CarInformations = () => {
 export const InfoPulsera = () => {
 	const { gradients, info } = colors;
 	const { cardContent } = gradients;
+
+	const simulateHeartbeat = () => {
+    const heartbeatElement = document.getElementById('heartbeat');
+    if (heartbeatElement) {
+      heartbeatElement.classList.add('heartbeat-animation');
+      setTimeout(() => {
+        heartbeatElement.classList.remove('heartbeat-animation');
+      }, 60000 / pulso);
+    }
+  };
+
+
+  const heartbeatStyle = {
+    fontSize: '24px',
+  };
+
+  const heartbeatAnimationStyle = {
+    transform: 'scale(1.3)',
+    transition: 'transform 0.3s ease-in-out',
+  };
+
+	const [pulso, setPresionDeseada] = useState(null);
+      const [tolerancia, setTolerancia] = useState(null);
+       const [dif, setDif] = useState(null);
+	let path="SensorPulso/PulsoActual"
+  let path2="SensorPresion/tolerancia"
+  let path3="SensorPresion/diferenciaPresionActual"
+
+  useEffect(() => {
+
+    // Initiate data fetching
+    fetchData(path)
+      .then((initialData) => {
+        setPresionDeseada(initialData);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+      fetchData(path2)
+      .then((initialData) => {
+        setTolerancia(initialData);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+       fetchData(path3)
+      .then((initialData) => {
+        setDif(initialData);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+
+    // Set up a real-time listener for subsequent updates
+    const dataRef = ref(database, path);
+    const unsubscribe = onValue(dataRef, (snapshot) => {
+      const updatedData = snapshot.val();
+      setPresionDeseada(updatedData);
+    });
+    const dataRef2 = ref(database, path2);
+    const unsubscribe2 = onValue(dataRef2, (snapshot) => {
+      const updatedData = snapshot.val();
+      setTolerancia(updatedData);
+    });
+     const dataRef3 = ref(database, path3);
+    const unsubscribe3 = onValue(dataRef3, (snapshot) => {
+      const updatedData = snapshot.val();
+      setDif(updatedData);
+    });
+	const intervalId = setInterval(simulateHeartbeat, 60000 / pulso);
+    return () => clearInterval(intervalId);
+    // Clean up the listener when the component is unmounted
+    return () => {
+      unsubscribe();
+    };
+
+  }, []);
+
 	return (
 		<Card
 			sx={({ breakpoints }) => ({
@@ -295,7 +419,7 @@ export const InfoPulsera = () => {
 					Información de la pulsera
 				</VuiTypography>
 				<VuiTypography variant='button' color='text' fontWeight='regular' mb='30px'>
-					Hello, Mark Johnson! Your Car is ready.
+					Bienvenido, a continuación puedes ver un resumen de la información de tu dispositivo.
 				</VuiTypography>
 				<Stack
 					spacing='24px'
@@ -322,14 +446,17 @@ export const InfoPulsera = () => {
 						})}
 						alignItems='center'>
 						<VuiBox sx={{ position: 'relative', display: 'inline-flex' }}>
-							<CircularProgress variant='determinate' value={60} size={170} color='info' />
+
 							<VuiBox display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
-								<VuiBox component='img' src={GreenLightning} />
+
 								<VuiTypography color='white' variant='h2' mt='6px' fontWeight='bold' mb='4px'>
-									68%
+
+									<div id="heartbeat" style={{ ...heartbeatStyle, ...(pulso && heartbeatAnimationStyle) }}>
+        {pulso}♥️
+      </div>
 								</VuiTypography>
 								<VuiTypography color='text' variant='caption'>
-									Current Load
+Pulso cardíaco
 								</VuiTypography>
 							</VuiBox>
 						</VuiBox>
@@ -339,10 +466,10 @@ export const InfoPulsera = () => {
 							flexDirection='column'
 							sx={{ textAlign: 'center' }}>
 							<VuiTypography color='white' variant='lg' fontWeight='bold' mb='2px' mt='18px'>
-								0h 58 min
+								0h 01 min
 							</VuiTypography>
 							<VuiTypography color='text' variant='button' fontWeight='regular'>
-								Time to full charge
+								Tiempo de trackeo continuo
 							</VuiTypography>
 						</VuiBox>
 					</VuiBox>
@@ -375,7 +502,7 @@ export const InfoPulsera = () => {
 								}}>
 								<VuiBox display='flex' flexDirection='column' mr='auto'>
 									<VuiTypography color='text' variant='caption' fontWeight='medium' mb='2px'>
-										Battery Health
+										Porcentaje de uso
 									</VuiTypography>
 									<VuiTypography
 										color='white'
@@ -386,7 +513,7 @@ export const InfoPulsera = () => {
 												fontSize: '20px'
 											}
 										})}>
-										76%
+										7%
 									</VuiTypography>
 								</VuiBox>
 								<VuiBox
@@ -404,37 +531,7 @@ export const InfoPulsera = () => {
 							</VuiBox>
 						</Grid>
 						<Grid item xs={12} md={5.5} xl={5.8} xxl={5.5}>
-							<VuiBox
-								display='flex'
-								p='18px'
-								alignItems='center'
-								sx={{
-									background: linearGradient(cardContent.main, cardContent.state, cardContent.deg),
-									borderRadius: '20px'
-								}}>
-								<VuiBox display='flex' flexDirection='column' mr='auto'>
-									<VuiTypography color='text' variant='caption' fontWeight='medium' mb='2px'>
-										Efficiency
-									</VuiTypography>
-									<VuiTypography
-										color='white'
-										variant='h4'
-										fontWeight='bold'
-										sx={({ breakpoints }) => ({
-											[breakpoints.only('xl')]: {
-												fontSize: '20px'
-											}
-										})}>
-										+20%
-									</VuiTypography>
-								</VuiBox>
-								<VuiBox sx={{ maxHeight: '75px' }}>
-									<LineChart
-										lineChartData={lineChartDataProfile1}
-										lineChartOptions={lineChartOptionsProfile1}
-									/>
-								</VuiBox>
-							</VuiBox>
+
 						</Grid>
 						<Grid item xs={12} md={5.5} xl={5.8} xxl={5.5}>
 							<VuiBox
@@ -448,7 +545,7 @@ export const InfoPulsera = () => {
 								}}>
 								<VuiBox display='flex' flexDirection='column' mr='auto'>
 									<VuiTypography color='text' variant='caption' fontWeight='medium' mb='2px'>
-										Consumption
+										Estado:
 									</VuiTypography>
 									<VuiTypography
 										color='white'
@@ -459,7 +556,7 @@ export const InfoPulsera = () => {
 												fontSize: '20px'
 											}
 										})}>
-										163W/km
+										{dif>tolerancia?"⚠️ Alerta presion":" ✅Todo en orden"}
 									</VuiTypography>
 								</VuiBox>
 								<VuiBox
@@ -477,37 +574,6 @@ export const InfoPulsera = () => {
 							</VuiBox>
 						</Grid>
 						<Grid item xs={12} md={5.5} xl={5.8} xxl={5.5}>
-							<VuiBox
-								display='flex'
-								p='18px'
-								alignItems='center'
-								sx={{
-									background: linearGradient(cardContent.main, cardContent.state, cardContent.deg),
-									borderRadius: '20px'
-								}}>
-								<VuiBox display='flex' flexDirection='column' mr='auto'>
-									<VuiTypography color='text' variant='caption' fontWeight='medium' mb='2px'>
-										This Week
-									</VuiTypography>
-									<VuiTypography
-										color='white'
-										variant='h4'
-										fontWeight='bold'
-										sx={({ breakpoints }) => ({
-											[breakpoints.only('xl')]: {
-												fontSize: '20px'
-											}
-										})}>
-										1.342km
-									</VuiTypography>
-								</VuiBox>
-								<VuiBox sx={{ maxHeight: '75px' }}>
-									<LineChart
-										lineChartData={lineChartDataProfile2}
-										lineChartOptions={lineChartOptionsProfile2}
-									/>
-								</VuiBox>
-							</VuiBox>
 						</Grid>
 					</Grid>
 				</Stack>

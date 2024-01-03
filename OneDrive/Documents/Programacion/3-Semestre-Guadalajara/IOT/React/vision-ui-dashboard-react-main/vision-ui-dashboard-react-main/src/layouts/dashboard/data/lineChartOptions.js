@@ -34,18 +34,7 @@ export const lineChartOptionsDashboard = {
   xaxis: {
     type: "datetime",
     categories: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+     "10200", "65111", "96407", "141565", "168274", "220993", "286785", "344832", "413441"
     ],
     labels: {
       style: {

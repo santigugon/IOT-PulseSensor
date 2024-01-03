@@ -36,7 +36,7 @@ export const barChartOptionsDashboard = {
     theme: "dark",
   },
   xaxis: {
-    categories: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    categories: ["10200", "65111", "96407", "141565", "168274", "220993", "286785", "344832", "413441"],
     show: false,
     labels: {
       show: false,
